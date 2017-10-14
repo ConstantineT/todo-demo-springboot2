@@ -35,4 +35,9 @@ public class TodoController {
     public Mono<Todo> createTodo(@RequestBody final Todo todo) {
         return todoRepository.save(todo);
     }
+
+    @DeleteMapping(value = "/todo/{id}")
+    public Mono<Void> deleteTodo(@PathVariable("id") final String id) {
+        return todoRepository.deleteById(new ObjectId(id));
+    }
 }

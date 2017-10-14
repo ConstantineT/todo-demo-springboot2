@@ -16,8 +16,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.hasProperty;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
 @RunWith(SpringRunner.class)
@@ -63,7 +62,7 @@ public class TodoDemoApplicationTest {
     }
 
     @Test
-    public void testGetTodo_shouldReturnCorrectJson_whenRequestWithExistingIDSent() {
+    public void testGetTodo_shouldReturnCorrectJson_whenRequestWithExistingIdSent() {
         webTestClient.get().uri("/todo/" + todo2.getId().toHexString())
                 .accept(MediaType.APPLICATION_JSON_UTF8)
                 .exchange()
@@ -88,5 +87,15 @@ public class TodoDemoApplicationTest {
                     assertThat(template.findById(todo.getId(), Todo.class).block(),
                             hasProperty("description", is(todo.getDescription())));
                 });
+    }
+
+    @Test
+    public void testDeleteTodo_shouldDeleteRecord_whenRequestWithExistingIdSent() {
+        webTestClient.delete().uri("/todo/" + todo1.getId().toHexString())
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody()
+                .consumeWith(response -> assertThat(template.findAll(Todo.class).toIterable(),
+                        contains(hasProperty("id", is(todo2.getId())))));
     }
 }
