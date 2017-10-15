@@ -5,6 +5,7 @@ This is a simple service for managing "Todo" tasks. The goal of this project is 
   - Spring Boot 2
   - Spring WebFlux
   - Spring Data MongoDB Reactive
+  - Project Reactor in master branch / RxJava 2 in rx-java-2 branch
   
 # How to run
   - `docker-compose up` to run the whole project
