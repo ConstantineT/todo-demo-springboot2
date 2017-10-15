@@ -4,16 +4,16 @@ services:
     build_service:
         build:
           context: .
-        image: todo_service
+        image: todo_service_springboot2
 
     mongodb:
-        container_name: todo_mongo
+        container_name: todo_service_springboot2_mongo
         image: mongo:latest
         ports:
           - 27017:27017
 
     start_service:
-        image: todo_service
+        image: todo_service_springboot2
         command:
           java -jar /usr/src/app/target/todo-service.jar --spring.profiles.active=docker
         ports:
