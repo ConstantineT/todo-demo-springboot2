@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.concurrent.TimeUnit;
 
-import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
 public class TodoController {
@@ -33,7 +33,7 @@ public class TodoController {
         return todoRepository.findById(new ObjectId(id));
     }
 
-    @PostMapping(value = "/todo", consumes = APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(value = "/todo", consumes = APPLICATION_JSON_VALUE)
     public Single<Todo> createTodo(@RequestBody final Todo todo) {
         return todoRepository.save(todo);
     }
