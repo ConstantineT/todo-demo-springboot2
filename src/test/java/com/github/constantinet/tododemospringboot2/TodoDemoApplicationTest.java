@@ -16,6 +16,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.time.LocalDate;
+
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
@@ -34,8 +36,8 @@ public class TodoDemoApplicationTest {
 
     @Before
     public void setUp() {
-        todo1 = new Todo(ObjectId.get(), "Order pizza");
-        todo2 = new Todo(ObjectId.get(), "Eat pizza");
+        todo1 = new Todo(ObjectId.get(), 1, "Order a pizza", LocalDate.of(2020, 1, 1));
+        todo2 = new Todo(ObjectId.get(), 2, "Eat the pizza", LocalDate.of(2020, 1, 2));
 
         template.collectionExists(Todo.class)
                 .flatMap(exists -> exists ? template.dropCollection(Todo.class) : Mono.just(exists))
@@ -55,8 +57,8 @@ public class TodoDemoApplicationTest {
                 .expectStatus().isOk()
                 .returnResult(Todo.class);
         StepVerifier.create(result.getResponseBody())
-                .consumeNextWith(todo -> assertThat(todo, hasProperty("description", is(todo1.getDescription()))))
-                .consumeNextWith(todo -> assertThat(todo, hasProperty("description", is(todo2.getDescription()))))
+                .consumeNextWith(todo -> assertThat(todo, hasProperty("id", is(todo1.getId()))))
+                .consumeNextWith(todo -> assertThat(todo, hasProperty("id", is(todo2.getId()))))
                 .thenCancel()
                 .verify();
     }
@@ -64,28 +66,28 @@ public class TodoDemoApplicationTest {
     @Test
     public void testGetTodo_shouldReturnCorrectJson_whenRequestWithExistingIdSent() {
         webTestClient.get().uri("/todo/" + todo2.getId().toHexString())
-                .accept(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody(Todo.class)
-                .consumeWith(todo -> assertThat(todo.getResponseBody(), hasProperty("description", is(todo2.getDescription()))));
+                .consumeWith(todo -> assertThat(todo.getResponseBody(), hasProperty("id", is(todo2.getId()))));
     }
 
     @Test
     public void testCreateTodo_shouldReturnCorrectJsonAndCreateRecord_whenRequestWithCorrectBodySent() {
-        final Todo todo = new Todo(ObjectId.get(), "Take a nap");
+        final Todo todo = new Todo(ObjectId.get(), 2, "Take a pizza", LocalDate.of(2020, 1, 3));
 
         webTestClient.post().uri("/todo")
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .contentType(MediaType.APPLICATION_JSON)
                 .body(Mono.just(todo), Todo.class)
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody(Todo.class)
                 .consumeWith(todoResponse -> {
                     assertThat(todoResponse.getResponseBody(),
-                            hasProperty("description", is(todo.getDescription())));
+                            hasProperty("id", is(todo.getId())));
                     assertThat(template.findById(todo.getId(), Todo.class).block(),
-                            hasProperty("description", is(todo.getDescription())));
+                            hasProperty("id", is(todo.getId())));
                 });
     }
 

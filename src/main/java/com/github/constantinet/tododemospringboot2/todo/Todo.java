@@ -1,16 +1,24 @@
 package com.github.constantinet.tododemospringboot2.todo;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.ToString;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.time.LocalDate;
+
 @Document(collection = "todos")
+@AllArgsConstructor
+@Getter
+@ToString
 public final class Todo {
 
     @Id
@@ -18,20 +26,13 @@ public final class Todo {
     private ObjectId id;
 
     @Field
-    private String description;
+    private final int priority;
 
-    @PersistenceConstructor
-    @JsonCreator
-    public Todo(@JsonProperty("id") final ObjectId id, @JsonProperty("description") final String description) {
-        this.id = id;
-        this.description = description;
-    }
+    @Field
+    private final String description;
 
-    public ObjectId getId() {
-        return id;
-    }
-
-    public String getDescription() {
-        return description;
-    }
+    @Field
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonSerialize(using = LocalDateSerializer.class)
+    private final LocalDate dueDate;
 }
