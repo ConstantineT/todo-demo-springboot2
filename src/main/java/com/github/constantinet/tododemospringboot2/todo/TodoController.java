@@ -3,10 +3,8 @@ package com.github.constantinet.tododemospringboot2.todo;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
-import java.time.Duration;
+import java.util.Optional;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -21,23 +19,22 @@ public class TodoController {
     }
 
     @GetMapping(value = "/todo")
-    public Flux<Todo> getTodos() {
-        return todoRepository.findAll()
-                .zipWith(Flux.interval(Duration.ZERO, Duration.ofSeconds(1)), (todo, l) -> todo);// simulates a delay
+    public Iterable<Todo> getTodos() {
+        return todoRepository.findAll();
     }
 
     @GetMapping(value = "/todo/{id}")
-    public Mono<Todo> getTodo(@PathVariable("id") final String id) {
+    public Optional<Todo> getTodo(@PathVariable("id") final String id) {
         return todoRepository.findById(new ObjectId(id));
     }
 
     @PostMapping(value = "/todo", consumes = APPLICATION_JSON_VALUE)
-    public Mono<Todo> createTodo(@RequestBody final Todo todo) {
+    public Todo createTodo(@RequestBody final Todo todo) {
         return todoRepository.save(todo);
     }
 
     @DeleteMapping(value = "/todo/{id}")
-    public Mono<Void> deleteTodo(@PathVariable("id") final String id) {
-        return todoRepository.deleteById(new ObjectId(id));
+    public void deleteTodo(@PathVariable("id") final String id) {
+        todoRepository.deleteById(new ObjectId(id));
     }
 }

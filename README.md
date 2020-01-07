@@ -1,11 +1,10 @@
 # Introduction
-This is a simple service for managing "Todo" tasks. The goal of this project is to demonstrate the Spring reactive stack.
+This is a simple service for managing "Todo" tasks. The goal of this project is to demonstrate the Spring stack.
 
 # Stack
   - Spring Boot 2
-  - Spring WebFlux
-  - Spring Data MongoDB Reactive
-  - Project Reactor
+  - Spring MVC
+  - Spring Data MongoDB 
   
 # How to run
   - `docker run -p 27017:27017 mongo:latest` and `mvn spring-boot:run` to run the app using dockerized MongoDB instance
