@@ -11,8 +11,6 @@ This is a simple service for managing "Todo" tasks. The goal of this project is 
   - `mvn test` to run tests using embedded MongoDB instance
 
 # How to test endpoints
-  - get all as JSON stream  
-    `curl http://localhost:8080/todo -i -H "Accept: application/stream+json"`
   - get all as JSON  
     `curl http://localhost:8080/todo -i -H "Accept: application/json"`
   - get by ID (please replace {id} with real identifier)  
